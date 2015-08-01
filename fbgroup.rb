@@ -42,16 +42,9 @@ command :get do |c|
     options.z.blank? ? zlib = false : zlib = true
 
     me = FbGraph2::User.me(options.a).fetch
-    group = nil
-
-    me.groups.each do |g|
-      if g.id == options.g
-        group = g
-        break
-      end
-    end
-
-    abort "unable to load group" if group.nil?
+    group = FbGraph2::Page.search(options.g, options.a)
+    group = group.first
+    group.access_token = options.a
 
     def write_json json, file, zlib
       if zlib
